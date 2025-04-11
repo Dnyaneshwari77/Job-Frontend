@@ -23,6 +23,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 
+// ✅ Don't use dotenv in frontend React
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const modalStyle = {
   position: "absolute",
   top: "50%",
@@ -43,7 +46,6 @@ const AllJobs = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  // Popup and edit state
   const [modalOpen, setModalOpen] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
@@ -54,14 +56,13 @@ const AllJobs = () => {
     status: "pending",
   });
 
-  // Fetch all jobs with optional filters
   const fetchJobs = async () => {
     try {
       const params = {};
       if (statusFilter !== "all") params.status = statusFilter;
       if (dateFilter) params.date = dateFilter;
 
-      const res = await axios.get("http://localhost:5000/api/v1/job", {
+      const res = await axios.get(`${API_BASE_URL}/job`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -80,18 +81,16 @@ const AllJobs = () => {
     fetchJobs();
   }, [statusFilter, dateFilter]);
 
-  // Handler when clicking on a job: fetch its details and open modal
   const handleJobClick = async (jobId) => {
     setModalLoading(true);
     setModalOpen(true);
     setEditMode(false);
     try {
-      const res = await axios.get(`http://localhost:5000/api/v1/job/${jobId}`, {
+      const res = await axios.get(`${API_BASE_URL}/job/${jobId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      // Expecting response in format: { job: { ... } } or { singleJob: { ... } }
       const jobData = res.data.job || res.data.singleJob;
       if (!jobData) throw new Error("Job data not found");
       setSelectedJob(jobData);
@@ -126,14 +125,11 @@ const AllJobs = () => {
     setEditForm({ ...editForm, [e.target.name]: e.target.value });
   };
 
-  // Save updated job details
   const handleSave = async () => {
     try {
-      await axios.patch(
-        `http://localhost:5000/api/v1/job/${selectedJob._id}`,
-        editForm,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.patch(`${API_BASE_URL}/job/${selectedJob._id}`, editForm, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       handleClose();
       fetchJobs();
     } catch (err) {
@@ -142,10 +138,9 @@ const AllJobs = () => {
     }
   };
 
-  // Delete job
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/job/${selectedJob._id}`, {
+      await axios.delete(`${API_BASE_URL}/job/${selectedJob._id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       handleClose();
@@ -162,7 +157,6 @@ const AllJobs = () => {
         Job Listings
       </Typography>
 
-      {/* Filters */}
       <Box display="flex" gap={2} mb={2}>
         <FormControl sx={{ minWidth: 150 }}>
           <InputLabel>Status</InputLabel>
@@ -189,7 +183,6 @@ const AllJobs = () => {
 
       {error && <Typography color="error">{error}</Typography>}
 
-      {/* Job list */}
       <Grid container spacing={2}>
         {jobs.length ? (
           jobs.map((job) => (
@@ -215,15 +208,12 @@ const AllJobs = () => {
         )}
       </Grid>
 
-      {/* Modal Popup for Job Details / Edit/Delete */}
       <Modal
         open={modalOpen}
         onClose={handleClose}
         closeAfterTransition
         slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: { timeout: 500 },
-        }}
+        slotProps={{ backdrop: { timeout: 500 } }}
       >
         <Fade in={modalOpen}>
           <Box sx={modalStyle}>
@@ -280,10 +270,7 @@ const AllJobs = () => {
                       Created:{" "}
                       {new Date(selectedJob.createdAt).toLocaleString()}
                     </Typography>
-                    <Typography>
-                      Updated:{" "}
-                      {new Date(selectedJob.updatedAt).toLocaleString()}
-                    </Typography>
+                   
                     <Box mt={2} display="flex" justifyContent="space-between">
                       <IconButton onClick={handleEdit} color="primary">
                         <EditIcon />
@@ -296,9 +283,7 @@ const AllJobs = () => {
                 )}
               </>
             ) : (
-              <Typography color="error">
-                Failed to load job details.
-              </Typography>
+              <Typography color="error">Failed to load job details.</Typography>
             )}
           </Box>
         </Fade>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Container,
   TextField,
@@ -7,15 +7,17 @@ import {
   Box,
   Link,
   Grid,
-  CircularProgress
-} from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+  CircularProgress,
+} from "@mui/material";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Register = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -27,18 +29,19 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/auth/register/', form);
+      const response = await axios.post(`${API_BASE_URL}/auth/register/`, form);
       const { user, token } = response.data;
 
       // Store in localStorage
-      localStorage.setItem('token', token);
-      localStorage.setItem('name', user.name);
-      localStorage.setItem('email', user.email);
+      localStorage.setItem("token", token);
+      localStorage.setItem("name", user.name);
+      localStorage.setItem("email", user.email);
 
-      toast.success('🎉 Registration successful! Redirecting...');
-      setTimeout(() => navigate('/'), 2000); // Small delay for toast
+      toast.success("🎉 Registration successful! Redirecting...");
+      setTimeout(() => navigate("/"), 2000); // Small delay for toast
     } catch (err) {
-      const message = err.response?.data?.msg || 'Registration failed. Please try again.';
+      const message =
+        err.response?.data?.msg || "Registration failed. Please try again.";
       toast.error(`❌ ${message}`);
     } finally {
       setLoading(false);
@@ -47,7 +50,9 @@ const Register = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ mt: 8, p: 4, boxShadow: 3, borderRadius: 2, bgcolor: 'white' }}>
+      <Box
+        sx={{ mt: 8, p: 4, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}
+      >
         <Typography variant="h5" gutterBottom align="center">
           Register
         </Typography>
@@ -94,7 +99,7 @@ const Register = () => {
                 disabled={loading}
                 startIcon={loading && <CircularProgress size={20} />}
               >
-                {loading ? 'Registering...' : 'Register'}
+                {loading ? "Registering..." : "Register"}
               </Button>
             </Grid>
           </Grid>
@@ -102,7 +107,7 @@ const Register = () => {
 
         <Box mt={2} textAlign="center">
           <Typography variant="body2">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link component={RouterLink} to="/login">
               Login
             </Link>

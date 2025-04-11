@@ -4,6 +4,9 @@ import { TextField, Button, Box, Typography, Alert } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// React automatically reads from .env files with REACT_APP_ prefix
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const AddJob = () => {
   const [form, setForm] = useState({
     company: "",
@@ -26,23 +29,24 @@ const AddJob = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/v1/job",
-        form,
-        {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.post(`${API_BASE_URL}/job`, form, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
 
       setSuccess("Job added successfully!");
       setForm({ company: "", position: "", status: "pending" });
+
+      // Optional: Redirect after success
+      setTimeout(() => navigate("/jobs"), 1500);
     } catch (err) {
       setError(err.response?.data?.msg || "Failed to add job");
       if (err.response?.status === 401) navigate("/login");
     }
   };
+
+  const statusOptions = ["pending", "interview", "declined"];
 
   return (
     <Box sx={{ maxWidth: 500, mx: "auto", mt: 4 }}>
@@ -82,9 +86,11 @@ const AddJob = () => {
           onChange={handleChange}
           margin="normal"
         >
-          <option value="pending">Pending</option>
-          <option value="interview">Interview</option>
-          <option value="declined">Declined</option>
+          {statusOptions.map((option) => (
+            <option key={option} value={option}>
+              {option.charAt(0).toUpperCase() + option.slice(1)}
+            </option>
+          ))}
         </TextField>
         <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
           Add Job
