@@ -1,13 +1,94 @@
-body {
+/* index.css */
+
+/* Reset & base styles */
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f0f4f8; /* light background */
+  color: #1e293b; /* deep slate blue/gray */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Links */
+a {
+  color: #1976d2; /* MUI primary color */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Form elements */
+input, textarea, select, button {
+  font-family: inherit;
+  color: #1e293b;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus, button:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #90caf9; /* lighter primary */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #e3f2fd; /* very light blue */
+}
+
+/* Utility classes */
+.flex {
+  display: flex;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.shadow-box {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+/* Buttons (optional custom style to match MUI) */
+.btn-primary {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #1565c0;
 }
