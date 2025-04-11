@@ -38,8 +38,7 @@ const AddJob = () => {
       setSuccess("Job added successfully!");
       setForm({ company: "", position: "", status: "pending" });
 
-      // Optional: Redirect after success
-      setTimeout(() => navigate("/jobs"), 1500);
+    
     } catch (err) {
       setError(err.response?.data?.msg || "Failed to add job");
       if (err.response?.status === 401) navigate("/login");
